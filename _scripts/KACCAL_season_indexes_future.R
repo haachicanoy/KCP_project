@@ -39,7 +39,7 @@ gcmList    <- c("bcc_csm1_1","bcc_csm1_1_m","csiro_mk3_6_0","gfdl_cm3", "gfdl_es
 # First semester: 181-182 days (depending on leap years)
 
 library(data.table)
-countyList <- countyList[6,]
+countyList <- countyList[5,]
 
 lapply(1:nrow(countyList), function(i)
 {
@@ -165,7 +165,7 @@ gcmList    <- c("bcc_csm1_1","bcc_csm1_1_m","csiro_mk3_6_0","gfdl_cm3", "gfdl_es
 # Second semester: 184 days
 
 library(data.table)
-countyList <- countyList[6,]
+countyList <- countyList[5,]
 
 lapply(1:nrow(countyList), function(i)
 {

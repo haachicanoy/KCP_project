@@ -490,7 +490,7 @@ calc_climIndices <- function(county='Kilifi', season='first'){
 }
 # calc_climIndices_v <- Vectorize(calc_climIndices, vectorize.args='county')
 
-countyList <- countyList[15,]
+countyList <- countyList[6,]
 
 library(parallel)
 mclapply(1:length(seasonList), function(j){
