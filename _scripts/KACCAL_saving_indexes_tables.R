@@ -47,10 +47,11 @@ seasonMetrics <- lapply(1:length(seaList), function(i){
       z <- clim_indexes[[k]]
       z <- as.data.frame(z)
       z$Index <- names(clim_indexes)[k]
+      z$Season <- seaList[i]
       return(z)
     })
     clim_indexes <- do.call(rbind.fill, clim_indexes)
-    clim_indexes <- clim_indexes[,c('cellID', 'lon', 'lat', as.character(1981:2015), 'Index')]
+    clim_indexes <- clim_indexes[,c('cellID', 'lon', 'lat', as.character(1981:2015), 'Index', 'Season')]
     clim_indexes$County <- counList[j]
     return(clim_indexes)
   })
@@ -79,11 +80,11 @@ countyList <- unique(countyList)
 
 lapply(1:length(countyList), function(m){
   
-  lapply(1:length(seaList), function(i){
+  lapply(1:length(periodList), function(k){
     
-    lapply(1:length(gcmList), function(j){
+    seaData <- lapply(1:length(seaList), function(i){
       
-      lapply(1:length(periodList), function(k){
+      gcmData <- lapply(1:length(gcmList), function(j){
         
         rcpData <- lapply(1:length(rcpList), function(l){
           
@@ -92,7 +93,10 @@ lapply(1:length(countyList), function(m){
             z <- clim_indexes[[n]]
             z <- as.data.frame(z)
             z$Index <- names(clim_indexes)[n]
-            z$
+            z$County <- countyList[m]
+            z$Season <- seaList[i]
+            z$GCM <- gcmList[j]
+            z$RCP <- rcpList[l]
             return(z)
           })
           clim_indexes <- do.call(rbind, clim_indexes)
@@ -100,9 +104,19 @@ lapply(1:length(countyList), function(m){
           
         })
         
+        rcpData <- do.call(rbind, rcpData)
+        return(rcpData)
+        
       })
       
+      gcmData <- do.call(rbind, gcmData)
+      return(gcmData)
+      
     })
+    
+    seaData <- do.call(rbind, seaData)
+    write.csv(seaData, paste('/mnt/workspace_cluster_8/Kenya_KACCAL/results/tables/future/', countyList[m], '_indexes_', periodList[k], '.csv', sep=''), row.names=FALSE)
+    return(cat('Done!\n'))
     
   })
   
