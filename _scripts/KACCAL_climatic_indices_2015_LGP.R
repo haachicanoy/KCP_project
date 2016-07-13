@@ -152,74 +152,55 @@ calc_climIndices <- function(county='Siaya', season='first'){
         runsDF <- rle(watbal_year$GDAY)
         runsDF <- data.frame(Lengths=runsDF$lengths, Condition=runsDF$values)
         
+        # Identify start and extension of each growing season during year
+        LGP <- 0; LGP_seq <- 0
         for(i in 1:nrow(runsDF)){
-          ifelse(test=runsDF$Condition[i]==1 & runsDF$Lengths[i] >= 5, yes=print(1), no=print(0))
-          ifelse(test=runsDF$Condition[i]==1 & runsDF$Lengths[i] >= 5, yes=print(1), no=print(0))
-        }
-        
-        # Identify how many growing seasons exists by year
-        growingCalc <- function(runsDF){
-          
-          # Identify tentative start and end days of growing seasons
-          growingDaysIni <- which(runsDF$Condition==1 & runsDF$Lengths>=5)
-          growingDaysEnd <- which(runsDF$Condition==0 & runsDF$Lengths>=12)
-          growingDaysEnd <- growingDaysEnd[growingDaysEnd>min(growingDaysIni)]
-          
-          # Identify starting days
-          gIniTemp <- rep(NA, length(growingDaysEnd))
-          for(h in 1:length(growingDaysEnd))
-          {
-            gIniTemp[h] <- min(growingDaysIni[which(growingDaysIni < growingDaysEnd[h])])
-            growingDaysIni <- growingDaysIni[-which(growingDaysIni < growingDaysEnd[h])]
-            if(growingDaysIni[h] > growingDaysEnd[h+1])
-            {
-              growingDaysEnd <- growingDaysEnd[-(h+1)]
+          if(runsDF$Lengths[i] >= 5 & runsDF$Condition[i] == 1){
+            LGP <- LGP + 1
+            LGP_seq <- c(LGP_seq, LGP)
+            LGP <- 0
+          } else {
+            if(LGP_seq[length(LGP_seq)]==1){
+              if(runsDF$Lengths[i] >= 12 & runsDF$Condition[i] == 0){
+                LGP <- 0
+                LGP_seq <- c(LGP_seq, LGP)
+              } else {
+                LGP <- LGP + 1
+                LGP_seq <- c(LGP_seq, LGP)
+                LGP <- 0
+              }
+            } else {
+              LGP <- 0
+              LGP_seq <- c(LGP_seq, LGP)
             }
-          }; rm(h)
-          growingDaysIni <- gIniTemp; rm(gIniTemp)
-          
-          # Identify growing season
-          growingSeason <- lapply(1:length(growingDaysIni), function(x){
-            gsID <- growingDaysIni[x]:(growingDaysEnd[x]-1)
-            gSeason <- sum(runsDF$Lengths[gsID])
-            gSeasonIni <- sum(runsDF$Lengths[1:(gsID[1])-1]) + 1
-            growingSeason <- data.frame(cellID=pixelList[j], GSeason=x, SGP=gSeasonIni, LGP=gSeason)
-            return(growingSeason)
-          })
-          growingSeason <- do.call(rbind, growingSeason)
-          
-          return(growingSeason)
-          
+          }
         }
-        test <- growingCalc(runsDF)
-        return(print(years_analysis[k]))
+        LGP_seq <- c(LGP_seq, LGP)
+        LGP_seq <- LGP_seq[-c(1, length(LGP_seq))]
+        runsDF$gSeason <- LGP_seq; rm(i, LGP, LGP_seq)
+        LGP_seq <- as.list(split(which(runsDF$gSeason==1), cumsum(c(TRUE, diff(which(runsDF$gSeason==1))!=1))))
+        
+        # Calculate start date and extension of each growing season by year and pixel
+        growingSeason <- lapply(1:length(LGP_seq), function(g){
+          
+          LGP_ini <- sum(runsDF$Lengths[1:(min(LGP_seq[[g]])-1)]) + 1
+          LGP <- sum(runsDF$Lengths[LGP_seq[[g]]])
+          results <- data.frame(cellID=pixelList[j], year=gsub(pattern='y', replacement='', years_analysis[k]), gSeason=g, SLGP=LGP_ini, LGP=LGP)
+          return(results)
+          
+        })
+        growingSeason <- do.call(rbind, growingSeason)
+        return(growingSeason)
       })
+      lgp_year_pixel <- do.call(rbind, lgp_year_pixel)
       
-      
-      ndws_year_pixel <- unlist(lapply(1:length(years_analysis), function(k){
-        
-        # Determine which days corresponds to season
-        wetDays_year <- as.numeric(indexs_wet_days[[k]][which(indexs_wet_days[[k]][,'cellID']==pixelList[j]), 4:ncol(indexs_wet_days[[k]])])
-        wetDays <-watbal_loc[wetDays_year,]
-        
-        # Calculate growing season start and period
-        runsDF <- rle(wetDays$GDAY)
-        runsDF <- data.frame(Lengths=runsDF$lengths, Condition=runsDF$values)
-        growingDaysIni <- which(runsDF$Condition==1 & runsDF$Lengths>=5)[1]
-        growingDaysEnd <- which(runsDF$Condition==0 & runsDF$Lengths>=12)
-        growingDaysEnd <- growingDaysEnd[which(growingDaysEnd>growingDaysIni)] - 1
-        if(length(growingDaysEnd)>0){
-          
-        } else {
-          
-        }
-        growingSeason  <- sum(runsDF$Lengths[growingDaysIni:growingDaysEnd])
-        growingSeasonIni <- sum(runsDF$Lengths[1:(growingDaysIni-1)]) + 1
-        rm(growingDaysIni, growingDaysEnd)
-        
-        ndws <- calc_wsdays(wetDays$ERATIO, season_ini=1, season_end=100, e_thresh=0.5)
-        return(ndws)
-      }))
+      # Start of growing season vs growing season
+      png('/home/hachicanoy/gSeason_vs_SLGP.png', width=8, height=8, pointsize=30, res=300, units='in')
+      plot(lgp_year_pixel$gSeason, lgp_year_pixel$SLGP, pch=20, col=lgp_year_pixel$gSeason, xlab='Growing season', ylab='Start of growing season (day of year)')
+      dev.off()
+      png('/home/hachicanoy/gSeason_vs_LGP.png', width=8, height=8, pointsize=30, res=300, units='in')
+      plot(lgp_year_pixel$gSeason, lgp_year_pixel$LGP, pch=20, col=lgp_year_pixel$gSeason, xlab='Growing season', ylab='Length of growing season (day of year)')
+      dev.off()
       
       NDWS <- watbal_loc[1, c('cellID', 'lon', 'lat')]
       NDWS <- cbind(NDWS, t(ndws_year_pixel))
