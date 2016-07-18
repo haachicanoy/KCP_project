@@ -202,3 +202,32 @@ plot(mMap)
 mMap <- countyMask
 mMap[df[,'cellID']] <- df[,'2021-08-26']
 plot(mMap)
+
+
+# gcm original
+prec_2022_08.nc
+dir <- '/mnt/workspace_cluster_8/Kenya_KACCAL/data/gcm_0_05deg_lat/bcc_csm1_1/2021_2045/rcp26/by-month'
+l2022 <- list.files(dir, pattern='prec_2022_', full.names=TRUE)
+l2022 <- lapply(l2022, stack)
+l2022 <- stack(l2022)
+ts_original <- as.numeric(raster::extract(l2022, data.frame(lon=37.375, lat=-1.525001)))
+# gcm bias-corrected
+load('/mnt/workspace_cluster_8/Kenya_KACCAL/data/bc_quantile_0_05deg_lat/bcc_csm1_1/2021_2045/rcp26/Makueni/prec/bc_qmap_prec_2021_2045.RData')
+makueni <- gcmFutBC
+library(lubridate)
+makueni2 <- makueni[,c(1:3, which(year(colnames(makueni)[-(1:3)])==2022))]
+ts_bcorrected <- as.numeric(makueni2[1,])
+# chirps data
+load('//dapadfs/workspace_cluster_8/Kenya_KACCAL/data/input_tables/Makueni/prec/prec.RData')
+makueniChirps <- chirps_year[[1]]
+makueniChirps <- as.matrix(makueniChirps)
+ts_chirps <- as.numeric(makueniChirps[1,-c(1:3)])
+
+
+par(mfrow=c(1,2))
+plot(ts_original, ty='l', col=1)
+lines(ts_bcorrected[-(1:3)], ty='l', col=4)
+lines(ts_chirps, ty='l', col=2)
+
+plot(ts_original, ts_bcorrected[-(1:3)], pch=20)
+

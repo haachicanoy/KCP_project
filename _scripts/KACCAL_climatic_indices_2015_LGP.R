@@ -114,9 +114,10 @@ calc_climIndices <- function(county='Siaya', season='first'){
     pixelList <- Reduce(intersect, list(tmaxAll[,'cellID'], tminAll[,'cellID'], precAll[,'cellID'], dswrfAll[,'cellID'], soil[,'cellID']))
     
     # Created function
+    library(tidyr)
+    library(lubridate)
     NDWSProcess <- function(j){ # By pixel
       
-      library(lubridate)
       daysList <- Reduce(intersect, list(colnames(tmaxAll[,-c(1:3)]), colnames(tminAll[,-c(1:3)]),
                                          colnames(precAll[,-c(1:3)]), colnames(dswrfAll[,-c(1:3)])))
       
@@ -139,8 +140,6 @@ calc_climIndices <- function(county='Siaya', season='first'){
       # Length of growing season per year
       # Start: 5-consecutive growing days.
       # End: 12-consecutive non-growing days.
-      
-      ##################################################################
       
       # Run process by year
       lgp_year_pixel <- lapply(1:length(years_analysis), function(k){
@@ -190,24 +189,36 @@ calc_climIndices <- function(county='Siaya', season='first'){
           
         })
         growingSeason <- do.call(rbind, growingSeason)
+        if(nrow(growingSeason)>2){
+          growingSeason <- growingSeason[rank(-growingSeason$LGP) %in% 1:2,]
+          growingSeason$gSeason <- rank(growingSeason$SLGP)
+          growingSeason <- growingSeason[order(growingSeason$gSeason),]
+        }
         return(growingSeason)
       })
       lgp_year_pixel <- do.call(rbind, lgp_year_pixel)
       
+      ##################################################################
+      # Verify start and ends of growing seasons by year
+      ##################################################################
+      # test3 <- watbal_loc[year(rownames(watbal_loc))==1985,]
+      # test4 <- lgp_year_pixel[lgp_year_pixel$year==1985,]
+      # par(mfrow=c(1,2)); plot(test3$ERATIO, ty='l'); plot(test3$RAIN, ty='l')
+      # abline(v=test4$SLGP, col=2)
+      
       # Start of growing season vs growing season
-      png('/home/hachicanoy/gSeason_vs_SLGP.png', width=8, height=8, pointsize=30, res=300, units='in')
-      plot(lgp_year_pixel$gSeason, lgp_year_pixel$SLGP, pch=20, col=lgp_year_pixel$gSeason, xlab='Growing season', ylab='Start of growing season (day of year)')
-      dev.off()
-      png('/home/hachicanoy/gSeason_vs_LGP.png', width=8, height=8, pointsize=30, res=300, units='in')
-      plot(lgp_year_pixel$gSeason, lgp_year_pixel$LGP, pch=20, col=lgp_year_pixel$gSeason, xlab='Growing season', ylab='Length of growing season (day of year)')
-      dev.off()
+      # png('/home/hachicanoy/gSeason_vs_SLGP.png', width=8, height=8, pointsize=30, res=300, units='in')
+      # plot(lgp_year_pixel$gSeason, lgp_year_pixel$SLGP, pch=20, col=lgp_year_pixel$gSeason, xlab='Growing season', ylab='Start of growing season (day of year)')
+      # dev.off()
+      # png('/home/hachicanoy/gSeason_vs_LGP.png', width=8, height=8, pointsize=30, res=300, units='in')
+      # plot(lgp_year_pixel$gSeason, lgp_year_pixel$LGP, pch=20, col=lgp_year_pixel$gSeason, xlab='Growing season', ylab='Length of growing season (day of year)')
+      # dev.off()
+      ##################################################################
       
-      NDWS <- watbal_loc[1, c('cellID', 'lon', 'lat')]
-      NDWS <- cbind(NDWS, t(ndws_year_pixel))
-      colnames(NDWS)[4:ncol(NDWS)] <- as.character(gsub(pattern='y', replacement='', years_analysis))
-      rownames(NDWS) <- 1:nrow(NDWS)
-      
-      return(NDWS)
+      SLGP <- lgp_year_pixel[,c('cellID', 'year', 'gSeason', 'SLGP')] %>% spread(year, SLGP)
+      LGP  <- lgp_year_pixel[,c('cellID', 'year', 'gSeason', 'LGP')] %>% spread(year, LGP)
+      matrices <- list(SLGP=SLGP, LGP=LGP)
+      return(matrices)
     }
     library(compiler)
     NDWSProcessCMP <- cmpfun(NDWSProcess)
