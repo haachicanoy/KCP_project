@@ -29,7 +29,7 @@ countyList <- data.frame(Cluster=c(rep('Cluster 1', 3),
 countyList$Cluster <- as.character(countyList$Cluster)
 countyList$County <- as.character(countyList$County)
 
-countyList <- countyList[12,]
+countyList <- countyList[6,]
 
 periodList <- c('2021_2045', '2041_2065')
 rcpList    <- paste("rcp", c(26, 45, 60, 85), sep="")

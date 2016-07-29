@@ -24,7 +24,7 @@ countyList <- data.frame(Cluster=c(rep('Cluster 1', 3),
                                   'Kwale', 'Makueni', 'Taita Taveta', 'Embu',
                                   'Meru', 'Nyeri', 'Nyandarua', 'Nakuru',
                                   'Homa Bay', 'Siaya', 'Busia', 'West Pokot'))
-countyList <- countyList[12,]
+countyList <- countyList[6,]
 countyList$Cluster <- as.character(countyList$Cluster)
 countyList$County <- as.character(countyList$County)
 
@@ -183,7 +183,7 @@ gg <- gg + theme(axis.text.x = element_text(size=14),
                  axis.title.y = element_text(face="bold",size=15),
                  legend.text = element_text(size=14),
                  legend.title = element_text(face="bold",size=15))
-gg <- gg + scale_x_continuous(breaks=seq(1980, 2015, 5)) + scale_y_continuous(limits=c(0, 800))
+gg <- gg + scale_x_continuous(breaks=seq(1980, 2015, 5)) + scale_y_continuous(limits=c(0, 600))
 outDir <- paste('/mnt/workspace_cluster_8/Kenya_KACCAL/results/graphics/historical_trends/', gsub(pattern=' ', replacement='_', countyList$County[[1]]), sep='')
 if(!file.exists(paste(outDir, '/', gsub(pattern=' ', replacement='_', countyList$County[1]), '_TOTRAIN_season_2015.pdf', sep=''))){
   ggsave(filename=paste(outDir, '/', gsub(pattern=' ', replacement='_', countyList$County[1]), '_TOTRAIN_season_2015.pdf', sep=''), plot=gg, width=10, height=7, units='in')
@@ -199,7 +199,7 @@ gg <- gg + theme(axis.text.x = element_text(size=14),
                  legend.text = element_text(size=14),
                  legend.title = element_text(face="bold",size=15))
 gg <- gg + theme(legend.position="none")
-gg <- gg + scale_x_continuous(breaks=seq(1980, 2015, 5)) + scale_y_continuous(limits=c(0, 800))
+gg <- gg + scale_x_continuous(breaks=seq(1980, 2015, 5)) + scale_y_continuous(limits=c(0, 600))
 if(!file.exists(paste(outDir, '/', gsub(pattern=' ', replacement='_', countyList$County[1]), '_TOTRAIN_firstSeason_2015.pdf', sep=''))){
   ggsave(filename=paste(outDir, '/', gsub(pattern=' ', replacement='_', countyList$County[1]), '_TOTRAIN_firstSeason_2015.pdf', sep=''), plot=gg, width=10, height=7, units='in')
 }
@@ -215,7 +215,7 @@ gg <- gg + theme(axis.text.x = element_text(size=14),
                  legend.title = element_text(face="bold",size=15))
 gg <- gg + theme(legend.position="none")
 gg <- gg + scale_colour_manual(values=c('Second'='turquoise3'))
-gg <- gg + scale_x_continuous(breaks=seq(1980, 2015, 5)) + scale_y_continuous(limits=c(0, 800))
+gg <- gg + scale_x_continuous(breaks=seq(1980, 2015, 5)) + scale_y_continuous(limits=c(0, 600))
 if(!file.exists(paste(outDir, '/', gsub(pattern=' ', replacement='_', countyList$County[1]), '_TOTRAIN_secondSeason_2015.pdf', sep=''))){
   ggsave(filename=paste(outDir, '/', gsub(pattern=' ', replacement='_', countyList$County[1]), '_TOTRAIN_secondSeason_2015.pdf', sep=''), plot=gg, width=10, height=7, units='in')
 }
@@ -231,7 +231,7 @@ gg <- gg + theme(axis.text.x = element_text(size=14),
                  axis.title.y = element_text(face="bold",size=15),
                  legend.text = element_text(size=14),
                  legend.title = element_text(face="bold",size=15))
-gg <- gg + scale_x_continuous(breaks=seq(1980, 2015, 5)) + scale_y_continuous(limits=c(0, 1500))
+gg <- gg + scale_x_continuous(breaks=seq(1980, 2015, 5)) + scale_y_continuous(limits=c(0, 1000))
 if(!file.exists(paste(outDir, '/', gsub(pattern=' ', replacement='_', countyList$County[1]), '_TOTRAIN_complete_2015.pdf', sep=''))){
   ggsave(filename=paste(outDir, '/', gsub(pattern=' ', replacement='_', countyList$County[1]), '_TOTRAIN_complete_2015.pdf', sep=''), plot=gg, width=10, height=7, units='in')
 }
@@ -249,7 +249,7 @@ gg <- gg + theme(axis.text.x = element_text(size=14),
                  axis.title.y = element_text(face="bold",size=15),
                  legend.text = element_text(size=14),
                  legend.title = element_text(face="bold",size=15))
-gg <- gg + scale_x_continuous(breaks=seq(1980, 2005, 5)) + scale_y_continuous(limits=c(21.5, 24.5))
+gg <- gg + scale_x_continuous(breaks=seq(1980, 2005, 5)) + scale_y_continuous(limits=c(23, 27))
 outDir <- paste('/mnt/workspace_cluster_8/Kenya_KACCAL/results/graphics/historical_trends/', gsub(pattern=' ', replacement='_', countyList$County[[1]]), sep='')
 if(!file.exists(paste(outDir, '/', gsub(pattern=' ', replacement='_', countyList$County[1]), '_TMEAN_season_2015.pdf', sep=''))){
   ggsave(filename=paste(outDir, '/', gsub(pattern=' ', replacement='_', countyList$County[1]), '_TMEAN_season_2015.pdf', sep=''), plot=gg, width=10, height=7, units='in')
@@ -265,7 +265,7 @@ gg <- gg + theme(axis.text.x = element_text(size=14),
                  legend.text = element_text(size=14),
                  legend.title = element_text(face="bold",size=15))
 gg <- gg + theme(legend.position="none")
-gg <- gg + scale_x_continuous(breaks=seq(1980, 2005, 5)) + scale_y_continuous(limits=c(21.5, 24.5))
+gg <- gg + scale_x_continuous(breaks=seq(1980, 2005, 5)) + scale_y_continuous(limits=c(23, 27))
 if(!file.exists(paste(outDir, '/', gsub(pattern=' ', replacement='_', countyList$County[1]), '_TMEAN_firstSeason_2015.pdf', sep=''))){
   ggsave(filename=paste(outDir, '/', gsub(pattern=' ', replacement='_', countyList$County[1]), '_TMEAN_firstSeason_2015.pdf', sep=''), plot=gg, width=10, height=7, units='in')
 }
@@ -281,7 +281,7 @@ gg <- gg + theme(axis.text.x = element_text(size=14),
                  legend.title = element_text(face="bold",size=15))
 gg <- gg + theme(legend.position="none")
 gg <- gg + scale_colour_manual(values=c('Second'='turquoise3'))
-gg <- gg + scale_x_continuous(breaks=seq(1980, 2005, 5)) + scale_y_continuous(limits=c(21.5, 24.5))
+gg <- gg + scale_x_continuous(breaks=seq(1980, 2005, 5)) + scale_y_continuous(limits=c(23, 27))
 if(!file.exists(paste(outDir, '/', gsub(pattern=' ', replacement='_', countyList$County[1]), '_TMEAN_secondSeason_2015.pdf', sep=''))){
   ggsave(filename=paste(outDir, '/', gsub(pattern=' ', replacement='_', countyList$County[1]), '_TMEAN_secondSeason_2015.pdf', sep=''), plot=gg, width=10, height=7, units='in')
 }
@@ -297,7 +297,7 @@ gg <- gg + theme(axis.text.x = element_text(size=14),
                  axis.title.y = element_text(face="bold",size=15),
                  legend.text = element_text(size=14),
                  legend.title = element_text(face="bold",size=15))
-gg <- gg + scale_x_continuous(breaks=seq(1980, 2005, 5)) + scale_y_continuous(limits=c(21.5, 24.5))
+gg <- gg + scale_x_continuous(breaks=seq(1980, 2005, 5)) + scale_y_continuous(limits=c(23, 27))
 if(!file.exists(paste(outDir, '/', gsub(pattern=' ', replacement='_', countyList$County[1]), '_TMEAN_complete_2015.pdf', sep=''))){
   ggsave(filename=paste(outDir, '/', gsub(pattern=' ', replacement='_', countyList$County[1]), '_TMEAN_complete_2015.pdf', sep=''), plot=gg, width=10, height=7, units='in')
 }
@@ -328,7 +328,7 @@ system(paste("convert -verbose -density 300 ", outDir, "/", gsub(pattern=' ', re
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
 
 # For both seasons
-gg <- ggplot(allWrap[allWrap$Index=='NDWS',], aes(x=Years, y=Average, colour=Season)) + geom_line(size=1.2) + geom_point(size=3) + scale_color_manual(values=c('First'='darkgoldenrod3', 'Second'='turquoise3'))
+gg <- ggplot(allWrap[allWrap$Index=='NDWS',], aes(x=Years, y=Average, colour=Season)) + geom_area(fill=Season) + geom_point(size=3) + scale_color_manual(values=c('First'='darkgoldenrod3', 'Second'='turquoise3'))
 gg <- gg + theme_bw() + ylab('Drought. Number of consecutive days with drought stress (days)') + xlab('Years')
 gg <- gg + theme(axis.text.x = element_text(size=14),
                  axis.text.y = element_text(size=14),
@@ -909,7 +909,7 @@ wrapFutClimInd2 <- wrapFutClimInd
 wrapFutClimInd2 <- as.data.frame(dplyr::summarise(group_by(wrapFutClimInd2, Index, GCM, RCP, County, Season, Years), median(Average)))
 colnames(wrapFutClimInd2)[ncol(wrapFutClimInd2)] <- 'Average'
 
-county <- 'Homa Bay'
+county <- 'Taita Taveta'
 scenarioClustering3 <- function(county){
   
   seasonList <- c('first', 'second')
@@ -1146,7 +1146,7 @@ scenarioClustering3 <- function(county){
   return(cat('Process done.\n'))
   
 }
-county <- 'Homa Bay'
+county <- 'Taita Taveta'
 scenarioClustering3(county=county)
 
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
@@ -1158,7 +1158,7 @@ wrapFutClimInd2 <- wrapFutClimInd
 wrapFutClimInd2 <- as.data.frame(dplyr::summarise(group_by(wrapFutClimInd2, Index, GCM, RCP, County, Season, Years), median(Average)))
 colnames(wrapFutClimInd2)[ncol(wrapFutClimInd2)] <- 'Average'
 
-county <- 'Homa Bay'
+county <- 'Taita Taveta'
 scenarioTrendsClustering <- function(county){
   
   seasonList <- c('first', 'second')
@@ -1374,5 +1374,5 @@ scenarioTrendsClustering <- function(county){
   return(cat('Process done.\n'))
   
 }
-county <- 'Homa Bay'
+county <- 'Taita Taveta'
 scenarioTrendsClustering(county=county)

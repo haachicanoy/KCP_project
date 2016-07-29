@@ -203,31 +203,43 @@ mMap <- countyMask
 mMap[df[,'cellID']] <- df[,'2021-08-26']
 plot(mMap)
 
+# =-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-= #
+# CHECK AND RESOLVE TROUBLES WITH RASTERS
+# =-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-= #
 
-# gcm original
-prec_2022_08.nc
+library(lubridate)
+library(raster)
+library(data.table)
+
+# Choose a county where problems happen
+'Taita Taveta' # 'Makueni', 'Tana River'
+
+# Load GCM bias-corrected information
+load('/mnt/workspace_cluster_8/Kenya_KACCAL/data/bc_quantile_0_05deg_lat/bcc_csm1_1/2021_2045/rcp26/Tana_River/prec/bc_qmap_prec_2021_2045.RData')
+BCmatrix <- gcmFutBC; rm(gcmFutBC)
+# Choose a random year where problems happen
+BCmatrix2 <- BCmatrix[,c(1:3, which(year(colnames(BCmatrix)[-(1:3)])==2022))] # 2022, 2030, 2041
+ts_bcorrected <- as.numeric(BCmatrix2[49,])
+
+# Choose a random pixel with problems to check out, using its associated coordinates
+
+# Load GCM original information
 dir <- '/mnt/workspace_cluster_8/Kenya_KACCAL/data/gcm_0_05deg_lat/bcc_csm1_1/2021_2045/rcp26/by-month'
-l2022 <- list.files(dir, pattern='prec_2022_', full.names=TRUE)
+l2022 <- list.files(dir, pattern='prec_2041_', full.names=TRUE)
 l2022 <- lapply(l2022, stack)
 l2022 <- stack(l2022)
-ts_original <- as.numeric(raster::extract(l2022, data.frame(lon=37.375, lat=-1.525001)))
-# gcm bias-corrected
-load('/mnt/workspace_cluster_8/Kenya_KACCAL/data/bc_quantile_0_05deg_lat/bcc_csm1_1/2021_2045/rcp26/Makueni/prec/bc_qmap_prec_2021_2045.RData')
-makueni <- gcmFutBC
-library(lubridate)
-makueni2 <- makueni[,c(1:3, which(year(colnames(makueni)[-(1:3)])==2022))]
-ts_bcorrected <- as.numeric(makueni2[1,])
-# chirps data
-load('//dapadfs/workspace_cluster_8/Kenya_KACCAL/data/input_tables/Makueni/prec/prec.RData')
-makueniChirps <- chirps_year[[1]]
-makueniChirps <- as.matrix(makueniChirps)
-ts_chirps <- as.numeric(makueniChirps[1,-c(1:3)])
+ts_original <- as.numeric(raster::extract(l2022, data.frame(lon=37.175, lat=-1.775001)))
 
+# Load CHIRPS information
+load('/mnt/workspace_cluster_8/Kenya_KACCAL/data/input_tables/Makueni/prec/prec.RData')
+CHmatrix <- chirps_year[[1]]
+CHmatrix <- as.matrix(CHmatrix)
+ts_chirps <- as.numeric(CHmatrix[49,-c(1:3)])
 
-par(mfrow=c(1,2))
+# Plotting in the same graphic those three time-series
 plot(ts_original, ty='l', col=1)
 lines(ts_bcorrected[-(1:3)], ty='l', col=4)
 lines(ts_chirps, ty='l', col=2)
 
-plot(ts_original, ts_bcorrected[-(1:3)], pch=20)
+# plot(ts_original, ts_bcorrected[-(1:3)], pch=20)
 

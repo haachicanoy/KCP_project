@@ -188,6 +188,7 @@ lapply(1:nrow(countyList), function(i)
           if(!file.exists(t1) & !file.exists(t2)){
             
             load(precFile)
+            gcmFutBC[is.na(gcmFutBC)] <- 0
             library(lubridate)
             years <- sort(unique(as.numeric(year(as.Date(colnames(gcmFutBC[,-c(1:3)]))))))
             
@@ -271,7 +272,7 @@ rcpList    <- paste("rcp", c(26, 45, 60, 85), sep="")
 gcmList    <- c("bcc_csm1_1","bcc_csm1_1_m","csiro_mk3_6_0","gfdl_cm3", "gfdl_esm2g","gfdl_esm2m","ipsl_cm5a_mr","miroc_esm", "miroc_esm_chem","miroc_miroc5","ncc_noresm1_m") # "mohc_hadgem2_es"
 
 library(data.table)
-countyList <- countyList[12,]
+countyList <- countyList[5,]
 
 lapply(1:nrow(countyList), function(i)
 {
