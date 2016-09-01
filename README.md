@@ -9,3 +9,5 @@ This folder contain all scripts using to develop the analysis. Comming soon the 
 
 ## _slides
 In this folder are saved all presentations related with the project
+
+Enseñandole GitHub a Carlos!
