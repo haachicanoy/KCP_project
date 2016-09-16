@@ -102,7 +102,7 @@ calc_climIndices <- function(county='Kilifi', season='first'){
             }
             prec <- lapply(1:length(prec), function(i){z <- as.data.frame(prec[[i]]); yr <- as.numeric(gsub(pattern='y', replacement='', x=names(prec)[i])); names(z)[4:length(names(z))] <- as.character(seq(as.Date(paste(yr, '-01-01', sep='')), as.Date(paste(yr, '-12-31', sep='')), by=1)); return(z)})
             names(prec) <- as.character(years_analysis)
-            prec <- reshape::merge_recurse(prec)
+            prec <- reshape::merge_recurse(prec); prec[is.na(prec)] <- 0
             
             ### =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= ###
             cat('Loading: Soil data\n')
@@ -394,7 +394,7 @@ calc_climIndices <- function(county='Kilifi', season='first'){
             
             load(paste(countyDir, '/prec/bc_qmap_prec_', periodList[j], '.RData', sep=''))
             precAll <- gcmFutBC
-            precAll <- as.data.frame(precAll)
+            precAll <- as.data.frame(precAll); precAll[is.na(precAll)] <- 0
             
             ### =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= ###
             cat('Loading: Maximum temperature for complete period\n')
@@ -510,7 +510,7 @@ calc_climIndices <- function(county='Kilifi', season='first'){
   
 }
 
-countyList <- countyList[2,]
+countyList <- countyList[5,]
 
 lapply(1:length(seasonList), function(j){
  lapply(1:nrow(countyList), function(i){
