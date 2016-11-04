@@ -28,7 +28,7 @@ countyList <- data.frame(Cluster=c(rep('Cluster 1', 3),
                                   'Kwale', 'Makueni', 'Taita Taveta', 'Embu',
                                   'Meru', 'Nyeri', 'Nyandarua', 'Nakuru',
                                   'Homa Bay', 'Siaya', 'Busia', 'West Pokot'))
-countyList <- countyList[5,]
+countyList <- countyList[13,]
 countyList$Cluster <- as.character(countyList$Cluster)
 countyList$County <- as.character(countyList$County)
 
